@@ -8,8 +8,8 @@ import static net.ser1.timetracker.DBHelper.START;
 import static net.ser1.timetracker.DBHelper.TASK_COLUMNS;
 import static net.ser1.timetracker.DBHelper.TASK_ID;
 import static net.ser1.timetracker.DBHelper.TASK_TABLE;
-import static net.ser1.timetracker.TimeRange.NULL;
 import static net.ser1.timetracker.Tasks.START_DAY;
+import static net.ser1.timetracker.TimeRange.NULL;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -362,4 +362,15 @@ public class TaskAdapter extends BaseAdapter {
             }
         }
     }
+
+	public void setRangeNote(int id, long start, String note)
+	{
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(TASK_ID, id);
+		values.put(DBHelper.NOTE, note);
+		String[] vals = { ""+start, "" + id };
+		db.update(RANGES_TABLE, values, START + " = ? AND " + TASK_ID + " = ?", vals);
+
+	}
 }

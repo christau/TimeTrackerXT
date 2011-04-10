@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RelativeLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="fill_parent"
-  android:layout_height="fill_parent">
+  android:layout_height="fill_parent" android:orientation="vertical">
   <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:scrollbars="vertical"
-    android:layout_alignParentTop="true"
-    android:layout_above="@id/time_edit_cancel"
-    android:layout_marginBottom="50dip">
+    android:scrollbars="vertical" android:layout_height="match_parent" android:layout_weight="1">
 
     <LinearLayout
       xmlns:android="http://schemas.android.com/apk/res/android"
@@ -48,15 +44,23 @@
         android:id="@+id/end_time"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content" />
+      <TextView
+        android:id="@+id/lblNotes"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:textSize="20sp"
+        android:paddingTop="20sp"
+        android:text="Note" />
+      <EditText
+        android:id="@+id/txtNote"
+        android:layout_height="wrap_content"
+        android:lines="10" android:layout_width="fill_parent"/>
     </LinearLayout>
   </ScrollView>
   <Button
     android:id="@+id/time_edit_cancel"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="60px"
-    android:layout_marginLeft="40px"
-    android:layout_marginRight="40px"
-    android:layout_alignParentBottom="true"
+
     android:text="@android:string/cancel" />
-</RelativeLayout>
+</LinearLayout>

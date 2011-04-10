@@ -15,14 +15,15 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String TASK_TABLE = "tasks";
     public static final String TAGS_TABLE = "tags";
 
+    public static final String NOTE = "note";
     public static final String END = "end";
     public static final String START = "start";
     public static final String TASK_ID = "task_id";
-    public static final String[] RANGE_COLUMNS = { START, END };
+    public static final String[] RANGE_COLUMNS = { START, END, NOTE };
     public static final String NAME = "name";
     public static final String[] TASK_COLUMNS = new String[] { "ROWID", NAME };
     public static final String TIMETRACKER_DB_NAME = "timetracker.db";
-    public static final int DBVERSION = 6;
+    public static final int DBVERSION = 8;
     public static final String TASK_NAME = "name";
     public static final String ID_NAME = "_id";
     public static final String TAG = "tagname";
@@ -60,27 +61,79 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase arg0, int oldVersion, int newVersion) {
-        if (oldVersion < 4) {
-            arg0.execSQL(String.format(CREATE_TASK_TABLE, "temp"));
-            arg0.execSQL("insert into temp(rowid,"+TASK_NAME+") select rowid,"
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	    if (oldVersion < 4) {
+            db.execSQL(String.format(CREATE_TASK_TABLE, "temp"));
+            db.execSQL("insert into temp(rowid,"+TASK_NAME+") select rowid,"
                     +TASK_NAME+" from "+TASK_TABLE+";");
-            arg0.execSQL("drop table "+TASK_TABLE+";");
-            arg0.execSQL(String.format(CREATE_TASK_TABLE, TASK_TABLE));
-            arg0.execSQL("insert into "+TASK_TABLE+"("+ID_NAME+","+TASK_NAME+
+            db.execSQL("drop table "+TASK_TABLE+";");
+            db.execSQL(String.format(CREATE_TASK_TABLE, TASK_TABLE));
+            db.execSQL("insert into "+TASK_TABLE+"("+ID_NAME+","+TASK_NAME+
                     ") select rowid,"+TASK_NAME+" from temp;");
-            arg0.execSQL("drop table temp;");
+            db.execSQL("drop table temp;");
         } else if (oldVersion < 5) {
-            arg0.execSQL(String.format(CREATE_TASK_TABLE, "temp"));
-            arg0.execSQL("insert into temp("+ID_NAME+","+TASK_NAME+") select rowid,"
+            db.execSQL(String.format(CREATE_TASK_TABLE, "temp"));
+            db.execSQL("insert into temp("+ID_NAME+","+TASK_NAME+") select rowid,"
                     +TASK_NAME+" from "+TASK_TABLE+";");
-            arg0.execSQL("drop table "+TASK_TABLE+";");
-            arg0.execSQL(String.format(CREATE_TASK_TABLE, TASK_TABLE));
-            arg0.execSQL("insert into "+TASK_TABLE+"("+ID_NAME+","+TASK_NAME+
+            db.execSQL("drop table "+TASK_TABLE+";");
+            db.execSQL(String.format(CREATE_TASK_TABLE, TASK_TABLE));
+            db.execSQL("insert into "+TASK_TABLE+"("+ID_NAME+","+TASK_NAME+
                     ") select "+ID_NAME+","+TASK_NAME+" from temp;");
-            arg0.execSQL("drop table temp;");
-        } else if (oldVersion < 16) {
-            arg0.execSQL(CREATE_TAGS_TABLE);
+            db.execSQL("drop table temp;");
+        } 
+        else if(oldVersion < 7)
+	    {
+		    db.execSQL("CREATE TABLE temp ("
+				    + TASK_ID+" INTEGER NOT NULL,"
+				    + START+" INTEGER NOT NULL,"
+				    + END+" INTEGER"
+				    + ");");
+		    
+		    db.execSQL("insert into temp("+TASK_ID+","+START+","+END+") select " + TASK_ID + ","
+				    +START + "," + END + " from "+RANGES_TABLE+";");
+		    
+		    db.execSQL("drop table "+RANGES_TABLE+";");
+		    
+		    db.execSQL("CREATE TABLE "+RANGES_TABLE+"("
+				    + TASK_ID+" INTEGER NOT NULL,"
+				    + START+" INTEGER NOT NULL,"
+				    + END+" INTEGER,"
+				    + NOTE +" TEXT"
+				    + ");");
+
+		    db.execSQL("insert into "+RANGES_TABLE+"("+TASK_ID+","+START+ ","+END+
+				    ") select "+TASK_ID+","+START+","+END+" from temp;");
+		    db.execSQL("drop table temp;");
+
+	    }
+        else if(oldVersion < 8)
+        {
+        	db.execSQL("CREATE TABLE temp ("
+        			+ ID_NAME+" INTEGER PRIMARY KEY AUTOINCREMENT,"
+        			+ TASK_ID+" INTEGER NOT NULL,"
+        			+ START+" INTEGER NOT NULL,"
+        			+ END+" INTEGER"
+        			+ ");");
+        	
+        	db.execSQL("insert into temp("+TASK_ID+","+START+","+END+") select " + TASK_ID + ","
+        			+START + "," + END + " from "+RANGES_TABLE+";");
+        	
+        	db.execSQL("drop table "+RANGES_TABLE+";");
+        	
+        	db.execSQL("CREATE TABLE "+RANGES_TABLE+"("
+        			+ TASK_ID+" INTEGER NOT NULL,"
+        			+ START+" INTEGER NOT NULL,"
+        			+ END+" INTEGER,"
+        			+ NOTE +" TEXT"
+        			+ ");");
+        	
+        	db.execSQL("insert into "+RANGES_TABLE+"("+TASK_ID+","+START+ ","+END+
+        			") select "+TASK_ID+","+START+","+END+" from temp;");
+        	db.execSQL("drop table temp;");
+        	
+        }
+        else if (oldVersion < 16) {
+//            db.execSQL(CREATE_TAGS_TABLE);
         }
     }
 }

@@ -53,17 +53,17 @@ import android.os.Handler;
 import android.os.Vibrator;
 import android.text.util.Linkify;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
  * Manages and displays a list of tasks, providing the ability to edit and
@@ -143,7 +143,7 @@ public class Tasks extends ListActivity {
             CHANGE_VIEW = 5,  SELECT_START_DATE = 6,  SELECT_END_DATE = 7,
             HELP = 8,  EXPORT_VIEW = 9,  SUCCESS_DIALOG = 10,  ERROR_DIALOG = 11,
             SET_WEEK_START_DAY = 12,  MORE = 13,  BACKUP = 14, PREFERENCES = 15,
-            PROGRESS_DIALOG = 16;
+            PROGRESS_DIALOG = 16, EDIT_NOTES = 17; 
     protected static final int BACKUP_DB = 0, RESTORE_DB = 1;
         // TODO: This could be done better...
     private static final String dbPath = "/data/data/net.ser1.timetracker/databases/timetracker.db";
@@ -763,6 +763,11 @@ public class Tasks extends ListActivity {
                         Task t = iter.next();
                         t.stop();
                         adapter.updateTask(t);
+                        //start activity to take a note
+                        Intent intent = new Intent(this, NoteEditor.class);
+                        intent.putExtra(TASK_ID, t.getId());
+                        intent.putExtra(START, t.getStartTime());
+                        startActivityForResult(intent,EDIT_NOTES);
                     }
                 }
                 if (startSelected) {
@@ -793,6 +798,12 @@ public class Tasks extends ListActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) return;
         Bundle extras = data.getExtras();
+        if (requestCode == EDIT_NOTES && resultCode == Activity.RESULT_OK) {
+        	int id = extras.getInt(TASK_ID);
+        	long start = extras.getLong(START);
+        	String note = extras.getString(NoteEditor.NOTE);
+        	adapter.setRangeNote(id, start, note);
+        }
         if (requestCode == PREFERENCES && resultCode == Activity.RESULT_OK) {
             if (extras.getBoolean(START_DAY)) {
                 switchView(preferences.getInt(VIEW_MODE, 0));
