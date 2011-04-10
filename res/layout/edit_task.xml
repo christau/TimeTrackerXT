@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout android:id="@+id/edit_task_root"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+
+  <TextView
+    android:id="@+id/task_edit_name_label"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_marginLeft="10dip"
+    android:layout_marginTop="15dip"
+    android:text="@string/task_name"
+    android:gravity="left"
+    android:textAppearance="?android:attr/textAppearanceMedium" />
+  <EditText
+    android:id="@+id/task_edit_name_edit"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_toRightOf="@id/task_edit_name_label"
+    android:layout_alignParentRight="true"
+    android:layout_marginTop="5dip"
+    android:layout_marginLeft="10dip"
+    android:layout_marginRight="10dip"
+    android:scrollHorizontally="true"
+    android:autoText="false"
+    android:capitalize="sentences"
+    android:singleLine="true"
+    android:gravity="fill_horizontal"
+    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+  <TextView
+    android:id="@+id/tag_name_label"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@id/task_edit_name_label"
+    android:layout_marginLeft="10dip"
+    android:layout_marginTop="25dip"
+    android:text="@string/new_tag"
+    android:gravity="left"
+    android:textAppearance="?android:attr/textAppearanceMedium" />
+  <ImageButton
+    android:id="@+id/add_tag"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"
+    android:layout_marginRight="10dip"
+    android:layout_marginTop="2dip"
+    android:layout_below="@id/task_edit_name_edit"
+    android:src="@android:drawable/ic_input_add" />
+  <EditText
+    android:id="@+id/new_tag_edit"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:layout_toRightOf="@id/tag_name_label"
+    android:layout_toLeftOf="@id/add_tag"
+    android:layout_below="@id/task_edit_name_edit"
+    android:layout_marginTop="3dip"
+    android:layout_marginLeft="10dip"
+    android:layout_marginRight="10dip"
+    android.layout_marginBottom="5dip"
+    android:scrollHorizontally="true"
+    android:autoText="false"
+    android:singleLine="true"
+    android:gravity="fill_horizontal"
+    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+  <ImageButton
+    android:id="@+id/add_tag_spinner"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentRight="true"
+    android:layout_below="@id/add_tag"
+    android:layout_marginRight="10dip"
+    android:gravity="right"
+    android:src="@android:drawable/ic_input_add" />
+  <Spinner
+    android:id="@+id/tag_chooser"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:layout_marginTop="1dip"
+    android:layout_marginRight="10dip"
+    android:layout_alignParentLeft="true"
+    android:layout_below="@id/new_tag_edit"
+    android:layout_toLeftOf="@id/add_tag_spinner" />
+
+  <ListView
+      android:id="@+id/tags"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent" 
+      android:layout_below="@id/tag_chooser"
+      android:layout_alignParentLeft="true"/>
+
+  <Button android:id="@+id/new_task_cancel"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dip"
+          android:text="@android:string/cancel"
+          android:layout_alignParentBottom="true"/>      
+</RelativeLayout>
