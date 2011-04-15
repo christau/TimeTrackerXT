@@ -68,6 +68,13 @@ public class EditTime extends Activity implements OnClickListener {
             endTime.setCurrentHour(ed.get(Calendar.HOUR_OF_DAY));
             endTime.setCurrentMinute(ed.get(Calendar.MINUTE));
         }
+        
+        String note = getIntent().getExtras().getString(DBHelper.NOTE);
+        if(note != null)
+        {
+        	((EditText)findViewById(R.id.txtNote)).setText(note);
+        }
+        
     }
 
     public void onClick(View v) {
@@ -98,6 +105,8 @@ public class EditTime extends Activity implements OnClickListener {
             }
             getIntent().putExtra(END_DATE, e.getTime().getTime());
         }
+        
+        getIntent().putExtra(DBHelper.NOTE, ((EditText)findViewById(R.id.txtNote)).getText().toString());
         
         setResult(Activity.RESULT_OK, getIntent());
         super.finish();

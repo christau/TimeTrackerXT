@@ -158,6 +158,7 @@ public class TaskTimes extends ListActivity implements DialogInterface.OnClickLi
                 Intent intent = new Intent(this, EditTime.class);
                 intent.putExtra(EditTime.START_DATE, selectedRange.getStart());
                 intent.putExtra(EditTime.END_DATE, selectedRange.getEnd());
+                intent.putExtra(DBHelper.NOTE, adapter.getNote(getIntent().getExtras().getInt(TASK_ID), selectedRange.getStart(), selectedRange.getEnd()));
                 startActivityForResult(intent, id);
                 break;
             case MOVE_TIME:
@@ -423,12 +424,16 @@ public class TaskTimes extends ListActivity implements DialogInterface.OnClickLi
             }
         }
 
-        public void addTimeRange(long sd, long ed) {
+        public void addTimeRange(long sd, long ed, String note) {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(TASK_ID, getIntent().getExtras().getInt(TASK_ID));
             values.put(START, sd);
             values.put(END, ed);
+            if(note != null)
+            {
+        	    values.put(DBHelper.NOTE, note);
+            }
             db.insert(RANGES_TABLE, END, values);
             insert(times, new TimeRange(sd, ed));
             notifyDataSetChanged();
@@ -490,7 +495,7 @@ public class TaskTimes extends ListActivity implements DialogInterface.OnClickLi
             }
         }
 
-        public void updateTimeRange(long sd, long ed, int newTaskId, TimeRange old) {
+        public void updateTimeRange(long sd, long ed, int newTaskId, TimeRange old, String note) {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(START, sd);
@@ -510,6 +515,10 @@ public class TaskTimes extends ListActivity implements DialogInterface.OnClickLi
                             String.valueOf(currentTaskId)
                         };
             }
+            if(note != null)
+            {
+        	    values.put(DBHelper.NOTE, note);
+            }
             db.update(RANGES_TABLE, values,
                     whereClause,
                     whereValues);
@@ -528,20 +537,34 @@ public class TaskTimes extends ListActivity implements DialogInterface.OnClickLi
                     null, null, TASK_NAME);
             return c;
         }
-    }
 
-    @Override
+		public String getNote(int taskId, long start, long end)
+		{
+			SQLiteDatabase db = dbHelper.getReadableDatabase();
+			Cursor c = db.rawQuery("SELECT "+DBHelper.NOTE+" FROM "+RANGES_TABLE+" WHERE "+TASK_ID + "="+taskId+" AND " + START + "="+start+" AND " + END + "="+end+"", null);
+			String ret = null;
+			if (c.moveToFirst())
+			{
+				ret = c.getString(0);
+			}
+			c.close();
+			return ret;
+		}
+	}
+
+@Override
     public void onActivityResult(int reqCode, int resCode, Intent intent) {
         if (resCode == Activity.RESULT_OK) {
             long sd = intent.getExtras().getLong(START_DATE);
             long ed = intent.getExtras().getLong(END_DATE);
+            String note = intent.getExtras().getString(DBHelper.NOTE);
             switch (reqCode) {
                 case ADD_TIME:
-                    adapter.addTimeRange(sd, ed);
+                    adapter.addTimeRange(sd, ed, note);
                     break;
                 case EDIT_TIME:
                     adapter.updateTimeRange(sd, ed,
-                            getIntent().getExtras().getInt(TASK_ID), selectedRange);
+                            getIntent().getExtras().getInt(TASK_ID), selectedRange, note);
                     break;
             }
         }
@@ -557,6 +580,7 @@ public class TaskTimes extends ListActivity implements DialogInterface.OnClickLi
             Intent intent = new Intent(this, EditTime.class);
             intent.putExtra(EditTime.START_DATE, selectedRange.getStart());
             intent.putExtra(EditTime.END_DATE, selectedRange.getEnd());
+            intent.putExtra(DBHelper.NOTE, adapter.getNote(getIntent().getExtras().getInt(TASK_ID), selectedRange.getStart(), selectedRange.getEnd()));
             startActivityForResult(intent, EDIT_TIME);
         }
     }

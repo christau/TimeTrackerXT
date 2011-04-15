@@ -801,7 +801,7 @@ public class Tasks extends ListActivity {
         if (requestCode == EDIT_NOTES && resultCode == Activity.RESULT_OK) {
         	int id = extras.getInt(TASK_ID);
         	long start = extras.getLong(START);
-        	String note = extras.getString(NoteEditor.NOTE);
+        	String note = extras.getString(DBHelper.NOTE);
         	adapter.setRangeNote(id, start, note);
         }
         if (requestCode == PREFERENCES && resultCode == Activity.RESULT_OK) {

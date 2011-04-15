@@ -10,8 +10,6 @@ import android.widget.EditText;
 
 public class NoteEditor extends Activity
 {
-	public static final String NOTE = "note";
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -37,7 +35,7 @@ public class NoteEditor extends Activity
 				String note = ((EditText)findViewById(R.id.txtNote)).getText().toString();
 //				getIntent().getExtras().putString(NOTE, note);
 				Intent intent = new Intent(NoteEditor.this, NoteEditor.class);
-			        intent.putExtra(NOTE, note);
+			        intent.putExtra(DBHelper.NOTE, note);
 			        intent.putExtra(DBHelper.TASK_ID, getIntent().getIntExtra(DBHelper.TASK_ID, -1));
 			        intent.putExtra(DBHelper.START, getIntent().getLongExtra(DBHelper.START, -1));
 				setResult(Activity.RESULT_OK, intent);
