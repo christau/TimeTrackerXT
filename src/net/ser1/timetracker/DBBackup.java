@@ -144,6 +144,7 @@ public class DBBackup extends AsyncTask<SQLiteDatabase, Integer, Void> {
                 publishProgress(SECONDARY, step);
                 final long start = source.getLong(0);
                 long end = source.getLong(1);
+                String note = source.getString(2);
                 if (!source.isNull(1)) {
                     TimeRange s = new TimeRange(start, end);
                     if (!destTimes.contains(s)) {
@@ -151,6 +152,7 @@ public class DBBackup extends AsyncTask<SQLiteDatabase, Integer, Void> {
                         values.put(TASK_ID, destId);
                         values.put(START, start);
                         values.put(END, end);
+                        values.put(DBHelper.NOTE, note);
                         destDb.insert(RANGES_TABLE, null, values);
                     }
                 }
