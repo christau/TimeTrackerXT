@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TimePicker;
 
 public class EditTime extends Activity implements OnClickListener {
@@ -28,13 +29,18 @@ public class EditTime extends Activity implements OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getIntent().getExtras().getLong(END_DATE) == NULL) {
+        if (getIntent().getExtras().getLong(END_DATE) == NULL) 
+        {
             setContentView(R.layout.edit_running_time_range);
             editingRunning = true;
-        } else {
+        } 
+        else 
+        {
             setContentView(R.layout.edit_time_range);
         }
         findViewById(R.id.time_edit_cancel).setOnClickListener(this);
+        ((TimePicker)findViewById(R.id.end_time)).setIs24HourView(true);
+        ((TimePicker)findViewById(R.id.start_time)).setIs24HourView(true);
     }
 
     @Override

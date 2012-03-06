@@ -305,7 +305,7 @@ public class TaskAdapter extends BaseAdapter {
      * The view for an individial task in the list.
      */
     private class TaskView extends LinearLayout {
-        private int fontSize = 16;
+        private int fontSize = 20;
 
         /**
          * The view of the task name displayed in the list
