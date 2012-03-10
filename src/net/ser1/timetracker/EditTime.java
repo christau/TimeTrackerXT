@@ -19,7 +19,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
-public class EditTime extends Activity implements OnClickListener {
+public class EditTime extends Activity{
 
     protected static final String END_DATE = "end-date";
     protected static final String START_DATE = "start-date";
@@ -38,7 +38,23 @@ public class EditTime extends Activity implements OnClickListener {
         {
             setContentView(R.layout.edit_time_range);
         }
-        findViewById(R.id.time_edit_cancel).setOnClickListener(this);
+        findViewById(R.id.time_edit_cancel).setOnClickListener(new OnClickListener()
+	{
+		@Override
+		public void onClick(View v)
+		{
+		        setResult(Activity.RESULT_CANCELED, getIntent());
+		        EditTime.super.finish();
+		}
+	});
+        findViewById(R.id.time_edit_ok).setOnClickListener(new OnClickListener()
+	{
+		@Override
+		public void onClick(View v)
+		{
+		        EditTime.this.finish();
+		}
+	});
         ((TimePicker)findViewById(R.id.end_time)).setIs24HourView(true);
         ((TimePicker)findViewById(R.id.start_time)).setIs24HourView(true);
     }
@@ -83,10 +99,6 @@ public class EditTime extends Activity implements OnClickListener {
         
     }
 
-    public void onClick(View v) {
-        setResult(Activity.RESULT_CANCELED, getIntent());
-        super.finish();
-    }
     
     @Override
     public void finish() {
