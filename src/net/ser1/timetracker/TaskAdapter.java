@@ -187,7 +187,7 @@ public class TaskAdapter extends BaseAdapter {
             res = makeWhereClause(start, end);
         }
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor r = db.rawQuery("SELECT t.name, r.start, r.end " +
+        Cursor r = db.rawQuery("SELECT t.name, r.start, r.end, r.note " +
                 " FROM " + TASK_TABLE + " t, " + RANGES_TABLE + " r " +
                 " WHERE r." + TASK_ID + " = t.ROWID " + res[0] +
                 " ORDER BY t.name, r.start ASC", null);

@@ -2,18 +2,21 @@ package net.ser1.timetracker;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import android.database.Cursor;
 
 public class CSVExporter {
     private static String escape( String s ) {
-        if (s == null) return "";
-        if (s.contains(",") || s.contains("\"")) {
+        if (s == null) return "\" \"";
             s = s.replaceAll("\"", "\"\"");
+            s = s.replace("\r\n", " ").replace("\n", " ");
+            if(s.length()==0)
+        	    s=" ";
             s = "\"" + s + "\"";
-        }
         return s;
     }
     
@@ -39,11 +42,17 @@ public class CSVExporter {
         for (String s : columnNames) {
             outputStream.print(prepend);
             outputStream.print(escape(s));
-            prepend = ",";
+            prepend = "\t";
         }
+        outputStream.print(prepend);
+        outputStream.print("Duration");
         if (c.moveToFirst()) {
-            Date d = new Date();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date start = new Date();
+            Date end = new Date();
+            Calendar cal = Calendar.getInstance();
+            DecimalFormat nf = new DecimalFormat("0.0");
+//            Date d = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm");
             do {
                 outputStream.println();
                 prepend = "";
@@ -51,21 +60,27 @@ public class CSVExporter {
                     outputStream.print(prepend);
                     String outValue;
                     if (columnNames[i].equals("start")) {
-                        d.setTime(c.getLong(i));
-                        outValue = formatter.format(d);                        
+                        start.setTime(c.getLong(i));
+                        outValue = formatter.format(start);                        
                     } else if (columnNames[i].equals("end")) {
                         if (c.isNull(i)) {
                             outValue = "";
                         } else {
-                            d.setTime(c.getLong(i));
-                            outValue = formatter.format(d);                        
+                            end.setTime(c.getLong(i));
+                            outValue = formatter.format(end);                        
                         }
                     } else {
                         outValue = escape(c.getString(i));
                     }
                     outputStream.print(outValue);
-                    prepend = ",";
+                    prepend = "\t";
                 }
+                cal.setTimeInMillis(end.getTime() - start.getTime());
+                int h = cal.get(Calendar.HOUR) -1;
+		int m = cal.get(Calendar.MINUTE);
+		outputStream.print(prepend);
+                outputStream.print(nf.format((float)h+((float)m/60f)));
+                
             } while (c.moveToNext());
         }
         outputStream.println();
